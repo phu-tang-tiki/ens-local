@@ -122,7 +122,10 @@ task('save', 'Saves a specified contract as a deployed contract')
 
 let real_accounts = undefined
 if (process.env.DEPLOYER_KEY) {
-  real_accounts = [process.env.DEPLOYER_KEY, process.env.OWNER_KEY || process.env.DEPLOYER_KEY]
+  real_accounts = [
+    process.env.DEPLOYER_KEY,
+    process.env.OWNER_KEY || process.env.DEPLOYER_KEY,
+  ]
 }
 
 const config: HardhatUserConfig = {
@@ -153,6 +156,15 @@ const config: HardhatUserConfig = {
       tags: ['legacy', 'use_root'],
       chainId: 1,
       accounts: real_accounts,
+    },
+    astra: {
+      url: `https://rpc.astranaut.dev`,
+      tags: ['use_root'],
+      chainId: 11115,
+      accounts: real_accounts,
+      saveDeployments: true,
+      blockGasLimit: 40000000,
+      allowUnlimitedContractSize: true,
     },
   },
   mocha: {},

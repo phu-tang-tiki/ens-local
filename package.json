@@ -5,10 +5,13 @@
   "scripts": {
     "test": "hardhat test",
     "test:local": "hardhat --network localhost test",
+    "private:astra": "hardhat --network astra run scripts/wrapper/deploy.js",
     "lint": "hardhat check",
     "build": "rm -rf ./build/deploy ./build/hardhat.config.js && hardhat compile && tsc",
     "prepublishOnly": "yarn build",
-    "pub": "yarn publish --access public"
+    "pub": "yarn publish --access public",
+    "dev": "hardhat --network astra run scripts/wrapper/register.js",
+    "deploy": "hardhat deploy --network astra"
   },
   "files": [
     "build",
@@ -52,7 +55,8 @@
     "@ensdomains/buffer": "^0.0.13",
     "@ensdomains/solsha1": "0.0.3",
     "@openzeppelin/contracts": "^4.1.0",
-    "dns-packet": "^5.3.0"
+    "dns-packet": "^5.3.0",
+    "envfile": "^6.18.0"
   },
   "directories": {
     "test": "test"

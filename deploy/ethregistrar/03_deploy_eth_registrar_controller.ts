@@ -80,10 +80,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ensAddress: (await ethers.getContract('ENSRegistry')).address,
     },
   )
-  const resolver = await provider.getResolver('eth')
+  const resolver = await provider.getResolver('astra')
   if (resolver === null) {
     console.log(
-      'No resolver set for .eth; not setting interface for ETH Registrar Controller',
+      'No resolver set for .astra; not setting interface for ETH Registrar Controller',
     )
     return
   }
@@ -92,7 +92,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     resolver.address,
   )
   const tx3 = await resolverContract.setInterface(
-    ethers.utils.namehash('eth'),
+    ethers.utils.namehash('astra'),
     interfaceId,
     controller.address,
   )

@@ -300,7 +300,7 @@ contract ETHRegistrarController is
         bytes32 label,
         bytes[] calldata data
     ) internal {
-        // use hardcoded .eth namehash
+        // use hardcoded .astra namehash
         bytes32 nodehash = keccak256(abi.encodePacked(ETH_NODE, label));
         Resolver resolver = Resolver(resolverAddress);
         resolver.multicallWithNodeCheck(nodehash, data);
@@ -315,7 +315,7 @@ contract ETHRegistrarController is
             msg.sender,
             owner,
             resolver,
-            string.concat(name, ".eth")
+            string.concat(name, ".astra")
         );
     }
 }
