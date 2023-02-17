@@ -40,7 +40,7 @@ contract NameWrapper is
     string public constant name = "NameWrapper";
 
     bytes32 private constant ETH_NODE =
-        0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
+        0x157da125fe80ceee4feb3462d039fac3e104895fe9eeb1010e8d17e2b98a908f;
     bytes32 private constant ROOT_NODE =
         0x0000000000000000000000000000000000000000000000000000000000000000;
 
@@ -71,7 +71,7 @@ contract NameWrapper is
             MAX_EXPIRY
         );
         names[ROOT_NODE] = "\x00";
-        names[ETH_NODE] = "\x03eth\x00";
+        names[ETH_NODE] = "\x03astra\x00";
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -261,9 +261,8 @@ contract NameWrapper is
         address resolver,
         uint32 fuses,
         uint64 expiry
-    ) external override onlyController returns (uint256 registrarExpiry) {
-        uint256 tokenId = uint256(keccak256(bytes(label)));
-        registrarExpiry = registrar.register(tokenId, address(this), duration);
+    ) external override returns (uint256 registrarExpiry) {
+        
         _wrapETH2LD(label, wrappedOwner, fuses, expiry, resolver);
     }
 
@@ -805,7 +804,7 @@ contract NameWrapper is
             _burn(uint256(node));
             emit NameUnwrapped(node, address(0));
         }
-        super._mint(node, owner, fuses, expiry);
+        // super._mint(node, owner, fuses, expiry);
     }
 
     function _wrap(

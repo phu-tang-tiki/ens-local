@@ -87,7 +87,7 @@ contract StablePriceOracle is IPriceOracle {
     }
 
     function attoUSDToWei(uint256 amount) internal view returns (uint256) {
-        uint256 ethPrice = uint256(usdOracle.latestAnswer());
+        uint256 ethPrice = uint256(2044972285714);
         return (amount * 1e8) / ethPrice;
     }
 

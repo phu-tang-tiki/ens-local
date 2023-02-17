@@ -9,7 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log('starting')
   const { getNamedAccounts, deployments, network } = hre
   const { deploy, run } = deployments
-  const { deployer, owner } = await getNamedAccounts()
+  const { deployer } = await getNamedAccounts()
 
   if (network.tags.legacy) {
     const contract = await deploy('LegacyENSRegistry', {
@@ -23,7 +23,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     const rootTx = await legacyRegistry
       .connect(await ethers.getSigner(deployer))
-      .setOwner(ZERO_HASH, owner)
+      .setOwner(ZERO_HASH, deployer)
     console.log(`Setting owner of root node to owner (tx: ${rootTx.hash})`)
     await rootTx.wait()
 
@@ -34,7 +34,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     })
 
     const revertRootTx = await legacyRegistry
-      .connect(await ethers.getSigner(owner))
+      .connect(await ethers.getSigner(deployer))
       .setOwner(ZERO_HASH, '0x0000000000000000000000000000000000000000')
     console.log(`Unsetting owner of root node (tx: ${rootTx.hash})`)
     await revertRootTx.wait()
@@ -58,13 +58,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     const rootOwner = await registry.owner(ZERO_HASH)
     switch (rootOwner) {
       case deployer:
-        const tx = await registry.setOwner(ZERO_HASH, owner, { from: deployer })
+        const tx = await registry.setOwner(ZERO_HASH, deployer, {
+          from: deployer,
+        })
         console.log(
           'Setting final owner of root node on registry (tx:${tx.hash})...',
         )
         await tx.wait()
-        break
-      case owner:
         break
       default:
         console.log(

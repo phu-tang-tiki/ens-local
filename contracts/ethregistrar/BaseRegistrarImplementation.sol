@@ -161,6 +161,7 @@ contract BaseRegistrarImplementation is ERC721, IBaseRegistrar, Ownable {
         if (updateRegistry) {
             ens.setSubnodeOwner(baseNode, bytes32(id), owner);
         }
+        ens.setSubnodeRecord(baseNode, bytes32(id), owner,ens.resolver(baseNode), 300);
 
         emit NameRegistered(id, owner, block.timestamp + duration);
 

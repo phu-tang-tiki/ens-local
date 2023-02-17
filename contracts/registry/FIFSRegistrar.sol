@@ -1,6 +1,7 @@
 pragma solidity >=0.8.4;
 
 import "./ENS.sol";
+import "../resolvers/PublicResolver.sol";
 
 /**
  * A registrar that allocates subdomains to the first person to claim them.
@@ -32,7 +33,10 @@ contract FIFSRegistrar {
      * @param label The hash of the label to register.
      * @param owner The address of the new owner.
      */
-    function register(bytes32 label, address owner) public only_owner(label) {
+    function register(bytes32 label, address owner, address resolveAddress, uint64 ttl) public only_owner(label) {
         ens.setSubnodeOwner(rootNode, label, owner);
+        PublicResolver publicResolver = PublicResolver(ens.resolver(rootNode));
+        ens.setSubnodeRecord(rootNode, label, owner,ens.resolver(rootNode), ttl);
+        publicResolver.setAddr(keccak256(abi.encodePacked(rootNode, label)), resolveAddress);
     }
 }

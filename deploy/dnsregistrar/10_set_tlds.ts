@@ -3,6 +3,7 @@ import { DeployFunction } from 'hardhat-deploy/types'
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 const tld_map = {
+  astra: ['astra', 'xyz'],
   mainnet: ['xyz'],
   ropsten: ['xyz'],
   localhost: ['xyz'],
@@ -1285,17 +1286,18 @@ async function setTLDsOnRegistry(
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { getNamedAccounts, network } = hre
-  const { owner } = await getNamedAccounts()
+  const { deployer } = await getNamedAccounts()
 
-  const registrar = await ethers.getContract('DNSRegistrar')
-  const signer = await ethers.getSigner(owner)
+  const signer = await ethers.getSigner(deployer)
+  const registrar = await ethers.getContract('DNSRegistrar', signer)
 
   let transactions: any[] = []
   if (network.tags.use_root) {
     const root = await ethers.getContract('Root', signer)
+    console.log('root', root.address)
     const registry = await ethers.getContract('ENSRegistry', signer)
     transactions = await setTLDsOnRoot(
-      owner,
+      deployer,
       root,
       registry,
       registrar,
@@ -1304,7 +1306,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     const registry = await ethers.getContract('ENSRegistry', signer)
     transactions = await setTLDsOnRegistry(
-      owner,
+      deployer,
       registry,
       registrar,
       tld_map[network.name as keyof typeof tld_map],
@@ -1315,7 +1317,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     console.log(
       `Waiting on ${transactions.length} transactions setting DNS TLDs`,
     )
-    await Promise.all(transactions.map((tx) => tx.wait()))
+    Promise.all(transactions.map((tx) => tx.wait()))
   }
 }
 
